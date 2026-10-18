@@ -1,4 +1,5 @@
-import { createServer, type Server } from "node:http";
+import type { Server } from "node:http";
+import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { builtinModels } from "@earendil-works/pi-ai/providers/all";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -75,8 +76,11 @@ describe("automated messages are labelled as not from the user", () => {
     ]) {
       expect(prompt.startsWith(AUTOMATED_MESSAGE_LABEL)).toBe(true);
       expect(prompt).not.toContain("Do not stop after a tool call");
+      expect(prompt).toContain("ask them instead of guessing");
     }
-    expect(SILENT_TOOL_CONTINUATION_PROMPT).toContain("ask them instead of guessing");
+    expect(SILENT_ALLOWED_TOOL_CONTINUATION_PROMPT).toContain(
+      "stay silent when there is nothing to report",
+    );
     const shell = formatFinishedShellCommand({ code: 0, stdout: "done", stderr: "" });
     expect(shell.startsWith(`${AUTOMATED_MESSAGE_LABEL} Shell command finished.`)).toBe(true);
     expect(shell).toContain("stdout:\ndone");
